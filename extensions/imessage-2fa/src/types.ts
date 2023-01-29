@@ -1,4 +1,5 @@
 export interface Message {
+  rowid: string;
   guid: string;
   message_date: string;
   sender: string;
@@ -8,5 +9,3 @@ export interface Message {
 export interface Preferences {
   lookBackDays?: string;
 }
-
-export type SearchType = "all" | "code";

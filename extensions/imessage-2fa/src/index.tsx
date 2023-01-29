@@ -1,16 +1,13 @@
 import { List, ActionPanel, Action, Icon } from "@raycast/api";
 import useInterval from "@use-it/interval";
-import { useState } from "react";
-import { useMessages } from "./messages";
-import { Message, SearchType } from "./types";
+import { useTwoFactorCodes } from "./messages";
+import { Message } from "./types";
 import { extractCode } from "./utils";
 
 const POLLING_INTERVAL = 1_000;
 
 export default function Command() {
-  const [searchType, setSearchType] = useState<SearchType>("code");
-  const [searchText, setSearchText] = useState("");
-  const { isLoading, data, permissionView, revalidate } = useMessages({ searchText, searchType });
+  const { isLoading, data, permissionView, revalidate } = useTwoFactorCodes();
 
   useInterval(revalidate, POLLING_INTERVAL);
 
@@ -19,13 +16,7 @@ export default function Command() {
   }
 
   return (
-    <List
-      isLoading={isLoading}
-      searchText={searchText}
-      searchBarAccessory={<SearchTypeDropdown onChange={setSearchType} />}
-      isShowingDetail
-      onSearchTextChange={setSearchText}
-    >
+    <List isLoading={isLoading} isShowingDetail>
       {data?.length ? (
         data.map((message) => {
           const code = extractCode(message.text);
@@ -38,6 +29,7 @@ export default function Command() {
               key={message.guid}
               icon={Icon.Message}
               title={code}
+              keywords={[message.sender, message.text]}
               detail={<Detail message={message} code={code} />}
               actions={<Actions message={message} code={code} />}
             />
@@ -47,15 +39,6 @@ export default function Command() {
         <List.EmptyView title="No codes found" description="Keeps refreshing every second" />
       )}
     </List>
-  );
-}
-
-function SearchTypeDropdown(props: { onChange: (searchType: SearchType) => void }) {
-  return (
-    <List.Dropdown tooltip="Filter search type" storeValue onChange={(value) => props.onChange(value as SearchType)}>
-      <List.Dropdown.Item title="2FA Codes" value="code" />
-      <List.Dropdown.Item title="All Messages" value="all" />
-    </List.Dropdown>
   );
 }
 

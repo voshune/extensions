@@ -1,12 +1,12 @@
 import { homedir } from "os";
 import { resolve } from "path";
 import { useSQL } from "@raycast/utils";
-import { Message, Preferences, SearchType } from "./types";
+import { Message, Preferences } from "./types";
 import { getPreferenceValues } from "@raycast/api";
 
 const DB_PATH = resolve(homedir(), "Library/Messages/chat.db");
 
-function getBaseQuery() {
+function getTwoFactorCodesQuery() {
   const preferences = getPreferenceValues<Preferences>();
   const lookBackDays = parseInt(preferences?.lookBackDays || "1") || 1;
   const lookBackMinutes = lookBackDays * 24 * 60;
@@ -26,33 +26,20 @@ function getBaseQuery() {
       and message.text is not null
       and length(message.text) > 0
       and datetime(message.date / 1000000000 + strftime('%s', '2001-01-01'), 'unixepoch', 'localtime') >= datetime('now', '-${lookBackMinutes} minutes', 'localtime')
+      and (
+        message.text glob '*[0-9][0-9][0-9]*'
+        or message.text glob '*[0-9][0-9][0-9][0-9]*'
+        or message.text glob '*[0-9][0-9][0-9][0-9][0-9]*'
+        or message.text glob '*[0-9][0-9][0-9][0-9][0-9][0-9]*'
+        or message.text glob '*[0-9][0-9][0-9]-[0-9][0-9][0-9]*'
+        or message.text glob '*[0-9][0-9][0-9][0-9][0-9][0-9][0-9]*'
+        or message.text glob '*[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]*'
+      ) 
+    order by message.date desc limit 100
   `;
 }
 
-function getQuery(options: { searchText?: string; searchType: SearchType }) {
-  let baseQuery = getBaseQuery();
-
-  if (options.searchType === "code") {
-    baseQuery = `${baseQuery} \nand (
-      message.text glob '*[0-9][0-9][0-9]*'
-      or message.text glob '*[0-9][0-9][0-9][0-9]*'
-      or message.text glob '*[0-9][0-9][0-9][0-9][0-9]*'
-      or message.text glob '*[0-9][0-9][0-9][0-9][0-9][0-9]*'
-      or message.text glob '*[0-9][0-9][0-9]-[0-9][0-9][0-9]*'
-      or message.text glob '*[0-9][0-9][0-9][0-9][0-9][0-9][0-9]*'
-      or message.text glob '*[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]*'
-    )`;
-  }
-
-  if (options.searchText !== "") {
-    baseQuery = `${baseQuery} \nand message.text like '%${options.searchText}%'`;
-  }
-
-  return `${baseQuery} \norder by message.date desc limit 100`.trim();
-}
-
-export function useMessages(options: { searchText?: string; searchType: SearchType }) {
-  const query = getQuery(options);
-  // console.log(query.substring(200));
+export function useTwoFactorCodes() {
+  const query = getTwoFactorCodesQuery();
   return useSQL<Message>(DB_PATH, query);
 }
