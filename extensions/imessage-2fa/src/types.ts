@@ -1,5 +1,5 @@
 export interface Message {
-  rowid: string;
+  ROWID: string;
   guid: string;
   message_date: string;
   sender: string;

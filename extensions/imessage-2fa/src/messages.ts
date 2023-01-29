@@ -3,6 +3,7 @@ import { resolve } from "path";
 import { useSQL } from "@raycast/utils";
 import { Message } from "./types";
 import { lookBackMinutes } from "./preferences";
+import { execSync } from "child_process";
 
 const DB_PATH = resolve(homedir(), "Library/Messages/chat.db");
 
@@ -41,4 +42,10 @@ function getTwoFactorCodesQuery() {
 export function useTwoFactorCodes() {
   const query = getTwoFactorCodesQuery();
   return useSQL<Message>(DB_PATH, query);
+}
+
+export function markAsRead(message: Message) {
+  execSync(
+    `sqlite3 ${DB_PATH} "UPDATE message SET is_read = 1, date_read = datetime('now', 'unixepoch', 'localtime') WHERE ROWID = ${message.ROWID}"`
+  );
 }

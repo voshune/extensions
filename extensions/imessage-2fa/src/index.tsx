@@ -1,6 +1,6 @@
 import { List, ActionPanel, Action, Icon } from "@raycast/api";
 import useInterval from "@use-it/interval";
-import { useTwoFactorCodes } from "./messages";
+import { markAsRead, useTwoFactorCodes } from "./messages";
 import { Message } from "./types";
 import { extractCode } from "./utils";
 
@@ -14,6 +14,8 @@ export default function Command() {
   if (permissionView) {
     return permissionView;
   }
+
+  console.log(data);
 
   return (
     <List isLoading={isLoading} isShowingDetail>
@@ -58,11 +60,16 @@ function Detail(props: { message: Message; code: string }) {
 }
 
 function Actions(props: { message: Message; code: string }) {
+  function handleRead() {
+    markAsRead(props.message);
+  }
+
   return (
     <ActionPanel title="Action">
       <ActionPanel.Section>
-        <Action.Paste content={props.code} title="Paste Code" />
-        <Action.CopyToClipboard content={props.code} title="Copy Code" />
+        <Action.Paste content={props.code} title="Paste Code" onPaste={handleRead} />
+        <Action.CopyToClipboard content={props.code} title="Copy Code" onCopy={handleRead} />
+        <Action icon={Icon.SpeechBubbleImportant} title="Mark as Read" onAction={handleRead} />
       </ActionPanel.Section>
       <ActionPanel.Section>
         <Action.CopyToClipboard
