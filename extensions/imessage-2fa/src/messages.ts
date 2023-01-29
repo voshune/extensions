@@ -1,15 +1,12 @@
 import { homedir } from "os";
 import { resolve } from "path";
 import { useSQL } from "@raycast/utils";
-import { Message, Preferences } from "./types";
-import { getPreferenceValues } from "@raycast/api";
+import { Message } from "./types";
+import { lookBackMinutes } from "./preferences";
 
 const DB_PATH = resolve(homedir(), "Library/Messages/chat.db");
 
 function getTwoFactorCodesQuery() {
-  const preferences = getPreferenceValues<Preferences>();
-  const lookBackDays = parseInt(preferences?.lookBackDays || "1") || 1;
-  const lookBackMinutes = lookBackDays * 24 * 60;
   return `
     select
       message.guid,
@@ -35,7 +32,9 @@ function getTwoFactorCodesQuery() {
         or message.text glob '*[0-9][0-9][0-9][0-9][0-9][0-9][0-9]*'
         or message.text glob '*[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]*'
       ) 
-    order by message.date desc limit 100
+    order by
+      message.date desc 
+    limit 100
   `;
 }
 

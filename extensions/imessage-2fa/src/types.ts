@@ -6,6 +6,6 @@ export interface Message {
   text: string;
 }
 
-export interface Preferences {
+export interface ExtensionPreferences {
   lookBackDays?: string;
 }
