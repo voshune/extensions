@@ -1,5 +1,5 @@
 import { ComponentProps, useState } from "react";
-import { Grid, List } from "@raycast/api";
+import { Grid, List, getPreferenceValues } from "@raycast/api";
 import { View } from "./components/View";
 import { useYourLibrary } from "./hooks/useYourLibrary";
 import { ArtistsSection } from "./components/ArtistsSection";
@@ -8,7 +8,8 @@ import { TracksSection } from "./components/TracksSection";
 import { PlaylistsSection } from "./components/PlaylistsSection";
 import { ShowsSection } from "./components/ShowsSection";
 import { EpisodesSection } from "./components/EpisodesSection";
-import { getPreferenceValues } from "@raycast/api";
+import { useCachedPromise } from "@raycast/utils";
+import { getMySavedTracks } from "./api/getMySavedTracks";
 
 const filters = {
   all: "All",
@@ -24,9 +25,15 @@ type FilterValue = keyof typeof filters;
 
 function YourLibraryCommand() {
   const [searchText, setSearchText] = useState("");
-  const [searchFilter, setSearchFilter] = useState<FilterValue>(getPreferenceValues()["Default-View"] ?? filters.all);
-  const { myLibraryData, myLibraryIsLoading } = useYourLibrary({
-    keepPreviousData: true,
+  // TODO: Add a new preference value that defaults to the stored value
+  const [searchFilter, setSearchFilter] = useState<FilterValue>(
+    getPreferenceValues()["Default-View"] ?? filters.tracks,
+  );
+  const { myLibraryData, myLibraryIsLoading } = useYourLibrary({ keepPreviousData: true });
+
+  const { data, pagination } = useCachedPromise(() => async ({ page }) => {
+    const { items } = await getMySavedTracks({ page });
+    return { data: items, hasMore: page < 10 };
   });
 
   const sharedProps: ComponentProps<typeof List> = {
@@ -37,15 +44,16 @@ function YourLibraryCommand() {
     filtering: true,
   };
 
-  if (
-    searchFilter === "all" ||
-    searchFilter === "tracks" ||
-    searchFilter === "playlists" ||
-    searchFilter === "episodes"
-  ) {
+  const showListView =
+    searchFilter === "all" || searchFilter === "tracks" || searchFilter === "playlists" || searchFilter === "episodes";
+
+  if (showListView) {
+    const limit = searchText ? undefined : 6;
+
     return (
       <List
         {...sharedProps}
+        pagination={pagination}
         searchBarAccessory={
           <List.Dropdown
             tooltip="Filter search"
@@ -60,62 +68,51 @@ function YourLibraryCommand() {
       >
         {searchFilter === "all" && (
           <>
-            <PlaylistsSection
-              type="list"
-              limit={searchText ? undefined : 6}
-              playlists={myLibraryData?.playlists?.items}
-            />
-            <AlbumsSection type="list" limit={searchText ? undefined : 6} albums={myLibraryData?.albums?.items} />
-            <ArtistsSection type="list" limit={searchText ? undefined : 6} artists={myLibraryData?.artists?.items} />
-            <TracksSection
-              limit={searchText ? undefined : 6}
-              tracks={myLibraryData?.tracks?.items}
-              title="Liked Songs"
-              queueTracks
-            />
-            <ShowsSection type="list" limit={searchText ? undefined : 6} shows={myLibraryData?.shows?.items} />
-            <EpisodesSection
-              limit={searchText ? undefined : 6}
-              episodes={myLibraryData?.episodes?.items}
-              title="Saved Episodes"
-            />
+            <PlaylistsSection type="list" limit={limit} playlists={myLibraryData?.playlists?.items} />
+            <AlbumsSection type="list" limit={limit} albums={myLibraryData?.albums?.items} />
+            <ArtistsSection type="list" limit={limit} artists={myLibraryData?.artists?.items} />
+            <TracksSection limit={limit} tracks={myLibraryData?.tracks?.items} title="Liked Songs" queueTracks />
+            <ShowsSection type="list" limit={limit} shows={myLibraryData?.shows?.items} />
+            <EpisodesSection limit={limit} episodes={myLibraryData?.episodes?.items} title="Saved Episodes" />
           </>
         )}
 
-        {searchFilter === "tracks" && (
-          <TracksSection tracks={myLibraryData?.tracks?.items} title="Liked Songs" queueTracks />
-        )}
-        {searchFilter === "episodes" && (
+        {searchFilter === "tracks" ? <TracksSection tracks={data} title="Liked Songs" queueTracks /> : null}
+        {searchFilter === "episodes" ? (
           <EpisodesSection episodes={myLibraryData?.episodes?.items} title="Saved Episodes" />
-        )}
+        ) : null}
 
-        {searchFilter === "playlists" && <PlaylistsSection type="list" playlists={myLibraryData?.playlists?.items} />}
+        {searchFilter === "playlists" ? (
+          <PlaylistsSection type="list" playlists={myLibraryData?.playlists?.items} />
+        ) : null}
       </List>
     );
+  } else {
+    return (
+      <Grid
+        {...sharedProps}
+        searchBarAccessory={
+          <Grid.Dropdown
+            tooltip="Filter search"
+            value={searchFilter}
+            onChange={(newValue) => setSearchFilter(newValue as FilterValue)}
+          >
+            {Object.entries(filters).map(([value, label]) => (
+              <Grid.Dropdown.Item key={value} title={label} value={value} />
+            ))}
+          </Grid.Dropdown>
+        }
+      >
+        {searchFilter === "artists" && (
+          <ArtistsSection type="grid" columns={5} artists={myLibraryData?.artists?.items} />
+        )}
+
+        {searchFilter === "albums" && <AlbumsSection type="grid" columns={5} albums={myLibraryData?.albums?.items} />}
+
+        {searchFilter === "shows" && <ShowsSection type="grid" columns={5} shows={myLibraryData?.shows?.items} />}
+      </Grid>
+    );
   }
-
-  return (
-    <Grid
-      {...sharedProps}
-      searchBarAccessory={
-        <Grid.Dropdown
-          tooltip="Filter search"
-          value={searchFilter}
-          onChange={(newValue) => setSearchFilter(newValue as FilterValue)}
-        >
-          {Object.entries(filters).map(([value, label]) => (
-            <Grid.Dropdown.Item key={value} title={label} value={value} />
-          ))}
-        </Grid.Dropdown>
-      }
-    >
-      {searchFilter === "artists" && <ArtistsSection type="grid" columns={5} artists={myLibraryData?.artists?.items} />}
-
-      {searchFilter === "albums" && <AlbumsSection type="grid" columns={5} albums={myLibraryData?.albums?.items} />}
-
-      {searchFilter === "shows" && <ShowsSection type="grid" columns={5} shows={myLibraryData?.shows?.items} />}
-    </Grid>
-  );
 }
 
 export default function Command() {
