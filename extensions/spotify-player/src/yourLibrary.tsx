@@ -31,14 +31,21 @@ function YourLibraryCommand() {
   );
   const { myLibraryData, myLibraryIsLoading } = useYourLibrary({ keepPreviousData: true });
 
-  const { data, pagination } = useCachedPromise(() => async ({ page }) => {
+  const {
+    data,
+    pagination,
+    isLoading: isLoadingPagination,
+  } = useCachedPromise(() => async ({ page }) => {
     const { items } = await getMySavedTracks({ page });
-    return { data: items, hasMore: page < 10 };
+    return {
+      data: items,
+      hasMore: items.length > 0 && page < 10,
+    };
   });
 
   const sharedProps: ComponentProps<typeof List> = {
     searchBarPlaceholder: "Search your library",
-    isLoading: myLibraryIsLoading,
+    isLoading: myLibraryIsLoading || isLoadingPagination,
     searchText,
     onSearchTextChange: setSearchText,
     filtering: true,
@@ -53,7 +60,7 @@ function YourLibraryCommand() {
     return (
       <List
         {...sharedProps}
-        pagination={pagination}
+        pagination={searchFilter === "tracks" ? pagination : undefined}
         searchBarAccessory={
           <List.Dropdown
             tooltip="Filter search"
