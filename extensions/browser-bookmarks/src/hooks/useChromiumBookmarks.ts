@@ -1,7 +1,10 @@
 import { existsSync, readdirSync, readFile } from "fs";
+import { join } from "path";
 import { promisify } from "util";
 
-import { useCachedPromise, useCachedState } from "@raycast/utils";
+import { environment } from "@raycast/api";
+import { useCachedPromise, useCachedState, useStreamJSON } from "@raycast/utils";
+import { useCallback, useMemo, useState } from "react";
 
 const read = promisify(readFile);
 
@@ -20,13 +23,6 @@ type BookmarkFolder = {
 };
 
 type BookmarkItem = BookmarkURL | BookmarkFolder;
-
-type BookmarksRoot = {
-  roots: {
-    bookmark_bar: BookmarkFolder;
-    other: BookmarkFolder;
-  };
-};
 
 function getBookmarks(bookmark: BookmarkFolder | BookmarkItem, hierarchy = "") {
   const bookmarks = [];
@@ -104,11 +100,12 @@ type UseChromiumBookmarksParams = {
   browserIcon: string;
   browserName: string;
   browserBundleId: string;
+  query?: string;
 };
 
 export default function useChromiumBookmarks(
   enabled: boolean,
-  { path, browserIcon, browserName, browserBundleId }: UseChromiumBookmarksParams,
+  { path, browserIcon, browserName, browserBundleId, query }: UseChromiumBookmarksParams,
 ) {
   const [currentProfile, setCurrentProfile] = useCachedState(`${browserName}-profile`, "");
 
@@ -130,48 +127,87 @@ export default function useChromiumBookmarks(
     [enabled, path],
   );
 
-  const { data, isLoading, mutate } = useCachedPromise(
-    async (profile, enabled, path) => {
-      if (!profile || !enabled || !existsSync(`${path}/${profile}/Bookmarks`)) {
-        return;
-      }
-
-      const file = await read(`${path}/${profile}/Bookmarks`);
-      return JSON.parse(file.toString()) as BookmarksRoot;
+  const transformFn = useCallback(getBookmarks, []);
+  const filterFn = useCallback(
+    (item: { title: string }[]) => {
+      if (!query) return true;
+      return item.some((i) => i.title.toLocaleLowerCase().includes(query));
     },
-    [currentProfile, enabled, path],
+    [query],
   );
 
-  const toolbarBookmarks = data ? getBookmarks(data.roots.bookmark_bar) : [];
-  const toolbarFolders = data ? getFolders(data.roots.bookmark_bar) : [];
+  const execute = useMemo(() => {
+    return !!currentProfile && enabled && existsSync(`${path}/${currentProfile}/Bookmarks`);
+  }, [currentProfile, enabled, path]);
 
-  const otherBookmarks = data ? getBookmarks(data.roots.other) : [];
-  const otherFolders = data ? getFolders(data.roots.other) : [];
+  const fullPath = `file://${path}/${currentProfile}/Bookmarks`;
 
-  const bookmarks = [...toolbarBookmarks, ...otherBookmarks].map((bookmark) => {
-    return {
-      ...bookmark,
-      id: `${bookmark.id}-${browserBundleId}`,
-      browser: browserBundleId,
-    };
+  const { data, isLoading, mutate, pagination } = useStreamJSON(fullPath, {
+    dataPath: /^roots.(bookmark_bar|other|synced).children$/,
+    folder: join(environment.supportPath, `cache-${currentProfile}.json`),
+    transform: transformFn,
+    filter: filterFn,
+    execute,
   });
 
-  const folders = [...toolbarFolders, ...otherFolders].map((folder) => {
-    return {
-      ...folder,
-      id: `${folder.id}-${browserBundleId}`,
-      icon: browserIcon,
-      browser: browserBundleId,
-    };
+  // console.log(data.length);
+
+  // data.forEach((d) => {
+  //   console.log(d.length);
+  // });
+
+  const transformFoldersFn = useCallback(getFolders, []);
+
+  const { data: dataFolders } = useStreamJSON(fullPath, {
+    dataPath: /^roots.(bookmark_bar|other|synced).children$/,
+    folder: join(environment.supportPath, `cache-${currentProfile}.json`),
+    transform: transformFoldersFn,
+    filter: filterFn,
+    execute,
   });
+
+  const bookmarks =
+    data?.flat().map((bookmark) => {
+      return {
+        ...bookmark,
+        id: `${bookmark.id}-${browserBundleId}`,
+        browser: browserBundleId,
+      };
+    }) ?? [];
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const bookmarksToDisplay = bookmarks.slice(0, (currentPage + 1) * 20);
+
+  const newPagination = {
+    pageSize: 20,
+    hasMore: pagination?.hasMore ?? true,
+    onLoadMore: () => {
+      console.log("here");
+      setCurrentPage(currentPage + 1);
+      if ((currentPage + 1) * 20 > bookmarks.length) {
+        pagination?.onLoadMore();
+      }
+    },
+  };
+
+  const folders =
+    dataFolders?.flat().map((folder) => {
+      return {
+        ...folder,
+        id: `${folder.id}-${browserBundleId}`,
+        icon: browserIcon,
+        browser: browserBundleId,
+      };
+    }) ?? [];
 
   return {
-    bookmarks,
+    bookmarks: bookmarksToDisplay,
     folders,
     isLoading,
     mutate,
     profiles: profiles || [],
     currentProfile,
     setCurrentProfile,
+    pagination: newPagination,
   };
 }
