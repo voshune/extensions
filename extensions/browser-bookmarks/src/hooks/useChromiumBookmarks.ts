@@ -4,7 +4,7 @@ import { promisify } from "util";
 
 import { environment } from "@raycast/api";
 import { useCachedPromise, useCachedState, useStreamJSON } from "@raycast/utils";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 const read = promisify(readFile);
 
@@ -129,9 +129,9 @@ export default function useChromiumBookmarks(
 
   const transformFn = useCallback(getBookmarks, []);
   const filterFn = useCallback(
-    (item: { title: string }[]) => {
+    (item: { title: string }) => {
       if (!query) return true;
-      return item.some((i) => i.title.toLocaleLowerCase().includes(query));
+      return item.title.toLocaleLowerCase().includes(query);
     },
     [query],
   );
@@ -175,21 +175,6 @@ export default function useChromiumBookmarks(
       };
     }) ?? [];
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const bookmarksToDisplay = bookmarks.slice(0, (currentPage + 1) * 20);
-
-  const newPagination = {
-    pageSize: 20,
-    hasMore: pagination?.hasMore ?? true,
-    onLoadMore: () => {
-      console.log("here");
-      setCurrentPage(currentPage + 1);
-      if ((currentPage + 1) * 20 > bookmarks.length) {
-        pagination?.onLoadMore();
-      }
-    },
-  };
-
   const folders =
     dataFolders?.flat().map((folder) => {
       return {
@@ -201,13 +186,13 @@ export default function useChromiumBookmarks(
     }) ?? [];
 
   return {
-    bookmarks: bookmarksToDisplay,
+    bookmarks,
     folders,
     isLoading,
     mutate,
     profiles: profiles || [],
     currentProfile,
     setCurrentProfile,
-    pagination: newPagination,
+    pagination,
   };
 }

@@ -414,7 +414,7 @@ export default function Command() {
         // vivaldi.isLoading
       }
       filtering
-      // pagination={chrome.pagination}
+      pagination={chrome.pagination}
       searchBarPlaceholder="Search by title, domain name, or folder name"
       onSearchTextChange={setQuery}
       searchBarAccessory={
@@ -436,7 +436,7 @@ export default function Command() {
         </List.Dropdown>
       }
     >
-      {bookmarks.slice(0, 100).map((item) => {
+      {bookmarks.map((item) => {
         return (
           <List.Item
             key={item.id}
