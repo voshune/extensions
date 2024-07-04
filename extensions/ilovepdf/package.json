@@ -70,7 +70,7 @@
       "name": "unlock-pdf",
       "title": "Unlock PDF",
       "subtitle": "iLovePDF",
-      "description": "Unlocks a PDF using iLovePDF API.",
+      "description": "Unlocks a PDF using iLovePDF API."
     },
     {
       "name": "protect-pdf",
@@ -78,7 +78,7 @@
       "subtitle": "iLovePDF",
       "description": "Protects a PDF with a password using iLovePDF API.",
       "mode": "view"
-    },
+    }
   ],
   "preferences": [
     {
