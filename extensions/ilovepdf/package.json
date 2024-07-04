@@ -66,11 +66,15 @@
       "description": "Converts an HTML page to PDF using iLovePDF API.",
       "mode": "view"
     },
-    {
       "name": "unlock-pdf",
       "title": "Unlock PDF",
       "subtitle": "iLovePDF",
       "description": "Unlocks a PDF using iLovePDF API.",
+    },
+      "name": "protect-pdf",
+      "title": "Protect PDF",
+      "subtitle": "iLovePDF",
+      "description": "Protects a PDF with a password using iLovePDF API.",
       "mode": "view"
     }
   ],

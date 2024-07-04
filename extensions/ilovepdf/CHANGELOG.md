@@ -2,6 +2,8 @@
 
 ## [Add Unlock PDF Command] - 2024-07-03
 
+## [Add Protect PDF Command] - 2024-07-03
+
 ## [Add Placeholder for format of split range] - 2024-07-02
 
 ## [Add Convert HTML Page to PDF] - 2024-06-23
