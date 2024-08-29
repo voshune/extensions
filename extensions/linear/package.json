@@ -222,6 +222,14 @@
       "mode": "view"
     }
   ],
+  "attachments": [
+    {
+      "title": "Linear Project Updates",
+      "name": "project-updates",
+      "description": "Get the latest project updates.",
+      "mode": "submenu"
+    }
+  ],
   "preferences": [
     {
       "name": "issueCustomCopyAction",

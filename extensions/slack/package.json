@@ -93,6 +93,14 @@
       "default": true
     }
   ],
+  "attachments": [
+    {
+      "title": "Slack Channels",
+      "name": "channel-attachment",
+      "description": "Get the latest Slack channel.",
+      "mode": "typeahead submenu"
+    }
+  ],
   "dependencies": {
     "@raycast/api": "^1.76.0",
     "@raycast/utils": "^1.16.0",

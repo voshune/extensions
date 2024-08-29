@@ -345,6 +345,14 @@
       ]
     }
   ],
+  "attachments": [
+    {
+      "title": "Search Pull Requests",
+      "name": "search-pull-requests-attachment",
+      "description": "Search in pull requests.",
+      "mode": "typeahead submenu"
+    }
+  ],
   "preferences": [
     {
       "name": "personalAccessToken",

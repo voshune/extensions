@@ -228,6 +228,14 @@
       "mode": "no-view"
     }
   ],
+  "attachments": [
+    {
+      "title": "Search Todoist Tasks",
+      "name": "search-tasks-attachment",
+      "description": "Search your Todoist tasks",
+      "mode": "direct"
+    }
+  ],
   "preferences": [
     {
       "name": "token",

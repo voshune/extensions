@@ -32309,6 +32309,31 @@ export type SearchPullRequestsQuery = {
   };
 };
 
+export type FastSearchPullRequestsQueryVariables = Exact<{
+  query: Scalars["String"]["input"];
+  numberOfItems: Scalars["Int"]["input"];
+}>;
+
+export type FastSearchPullRequestsQuery = {
+  __typename?: "Query";
+  search: {
+    __typename?: "SearchResultItemConnection";
+    edges?: Array<{
+      __typename?: "SearchResultItemEdge";
+      node?:
+        | { __typename?: "App" }
+        | { __typename?: "Discussion" }
+        | { __typename?: "Issue" }
+        | { __typename?: "MarketplaceListing" }
+        | { __typename?: "Organization" }
+        | { __typename?: "PullRequest"; id: string; title: string; number: number }
+        | { __typename?: "Repository" }
+        | { __typename?: "User" }
+        | null;
+    } | null> | null;
+  };
+};
+
 export type PullRequestDetailsFieldsFragment = {
   __typename?: "PullRequest";
   id: string;
@@ -32687,6 +32712,764 @@ export type PullRequestDetailsQuery = {
           __typename?: "ProjectV2Connection";
           totalCount: number;
           nodes?: Array<{ __typename?: "ProjectV2"; id: string; title: string } | null> | null;
+        };
+      }
+    | { __typename?: "PullRequestCommit" }
+    | { __typename?: "PullRequestCommitCommentThread" }
+    | { __typename?: "PullRequestReview" }
+    | { __typename?: "PullRequestReviewComment" }
+    | { __typename?: "PullRequestReviewThread" }
+    | { __typename?: "PullRequestThread" }
+    | { __typename?: "Push" }
+    | { __typename?: "PushAllowance" }
+    | { __typename?: "Reaction" }
+    | { __typename?: "ReadyForReviewEvent" }
+    | { __typename?: "Ref" }
+    | { __typename?: "ReferencedEvent" }
+    | { __typename?: "Release" }
+    | { __typename?: "ReleaseAsset" }
+    | { __typename?: "RemovedFromMergeQueueEvent" }
+    | { __typename?: "RemovedFromProjectEvent" }
+    | { __typename?: "RenamedTitleEvent" }
+    | { __typename?: "ReopenedEvent" }
+    | { __typename?: "RepoAccessAuditEntry" }
+    | { __typename?: "RepoAddMemberAuditEntry" }
+    | { __typename?: "RepoAddTopicAuditEntry" }
+    | { __typename?: "RepoArchivedAuditEntry" }
+    | { __typename?: "RepoChangeMergeSettingAuditEntry" }
+    | { __typename?: "RepoConfigDisableAnonymousGitAccessAuditEntry" }
+    | { __typename?: "RepoConfigDisableCollaboratorsOnlyAuditEntry" }
+    | { __typename?: "RepoConfigDisableContributorsOnlyAuditEntry" }
+    | { __typename?: "RepoConfigDisableSockpuppetDisallowedAuditEntry" }
+    | { __typename?: "RepoConfigEnableAnonymousGitAccessAuditEntry" }
+    | { __typename?: "RepoConfigEnableCollaboratorsOnlyAuditEntry" }
+    | { __typename?: "RepoConfigEnableContributorsOnlyAuditEntry" }
+    | { __typename?: "RepoConfigEnableSockpuppetDisallowedAuditEntry" }
+    | { __typename?: "RepoConfigLockAnonymousGitAccessAuditEntry" }
+    | { __typename?: "RepoConfigUnlockAnonymousGitAccessAuditEntry" }
+    | { __typename?: "RepoCreateAuditEntry" }
+    | { __typename?: "RepoDestroyAuditEntry" }
+    | { __typename?: "RepoRemoveMemberAuditEntry" }
+    | { __typename?: "RepoRemoveTopicAuditEntry" }
+    | { __typename?: "Repository" }
+    | { __typename?: "RepositoryInvitation" }
+    | { __typename?: "RepositoryMigration" }
+    | { __typename?: "RepositoryRule" }
+    | { __typename?: "RepositoryRuleset" }
+    | { __typename?: "RepositoryRulesetBypassActor" }
+    | { __typename?: "RepositoryTopic" }
+    | { __typename?: "RepositoryVisibilityChangeDisableAuditEntry" }
+    | { __typename?: "RepositoryVisibilityChangeEnableAuditEntry" }
+    | { __typename?: "RepositoryVulnerabilityAlert" }
+    | { __typename?: "ReviewDismissalAllowance" }
+    | { __typename?: "ReviewDismissedEvent" }
+    | { __typename?: "ReviewRequest" }
+    | { __typename?: "ReviewRequestRemovedEvent" }
+    | { __typename?: "ReviewRequestedEvent" }
+    | { __typename?: "SavedReply" }
+    | { __typename?: "SecurityAdvisory" }
+    | { __typename?: "SponsorsActivity" }
+    | { __typename?: "SponsorsListing" }
+    | { __typename?: "SponsorsListingFeaturedItem" }
+    | { __typename?: "SponsorsTier" }
+    | { __typename?: "Sponsorship" }
+    | { __typename?: "SponsorshipNewsletter" }
+    | { __typename?: "Status" }
+    | { __typename?: "StatusCheckRollup" }
+    | { __typename?: "StatusContext" }
+    | { __typename?: "SubscribedEvent" }
+    | { __typename?: "Tag" }
+    | { __typename?: "Team" }
+    | { __typename?: "TeamAddMemberAuditEntry" }
+    | { __typename?: "TeamAddRepositoryAuditEntry" }
+    | { __typename?: "TeamChangeParentTeamAuditEntry" }
+    | { __typename?: "TeamDiscussion" }
+    | { __typename?: "TeamDiscussionComment" }
+    | { __typename?: "TeamRemoveMemberAuditEntry" }
+    | { __typename?: "TeamRemoveRepositoryAuditEntry" }
+    | { __typename?: "Topic" }
+    | { __typename?: "TransferredEvent" }
+    | { __typename?: "Tree" }
+    | { __typename?: "UnassignedEvent" }
+    | { __typename?: "UnlabeledEvent" }
+    | { __typename?: "UnlockedEvent" }
+    | { __typename?: "UnmarkedAsDuplicateEvent" }
+    | { __typename?: "UnpinnedEvent" }
+    | { __typename?: "UnsubscribedEvent" }
+    | { __typename?: "User" }
+    | { __typename?: "UserBlockedEvent" }
+    | { __typename?: "UserContentEdit" }
+    | { __typename?: "UserList" }
+    | { __typename?: "UserStatus" }
+    | { __typename?: "VerifiableDomain" }
+    | { __typename?: "Workflow" }
+    | { __typename?: "WorkflowRun" }
+    | { __typename?: "WorkflowRunFile" }
+    | null;
+};
+
+export type PullRequestExtendedDetailsFragment = {
+  __typename?: "PullRequest";
+  id: string;
+  title: string;
+  body: string;
+  permalink: any;
+  number: number;
+  state: PullRequestState;
+  isDraft: boolean;
+  closed: boolean;
+  merged: boolean;
+  createdAt: any;
+  updatedAt: any;
+  closedAt?: any | null;
+  mergedAt?: any | null;
+  additions: number;
+  deletions: number;
+  mergeable: MergeableState;
+  reviewDecision?: PullRequestReviewDecision | null;
+  baseRefName: string;
+  headRefName: string;
+  author?:
+    | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+    | { __typename?: "EnterpriseUserAccount"; id: string; login: string; name?: string | null; avatarUrl: any }
+    | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+    | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+    | { __typename?: "User"; id: string; avatarUrl: any; name?: string | null; login: string; isViewer: boolean }
+    | null;
+  repository: {
+    __typename?: "Repository";
+    id: string;
+    nameWithOwner: string;
+    name: string;
+    url: any;
+    mergeCommitAllowed: boolean;
+    squashMergeAllowed: boolean;
+    rebaseMergeAllowed: boolean;
+    defaultBranchRef?: {
+      __typename?: "Ref";
+      target?:
+        | { __typename?: "Blob"; oid: any }
+        | { __typename?: "Commit"; oid: any }
+        | { __typename?: "Tag"; oid: any }
+        | { __typename?: "Tree"; oid: any }
+        | null;
+    } | null;
+    owner:
+      | { __typename?: "Organization"; login: string; avatarUrl: any }
+      | { __typename?: "User"; login: string; avatarUrl: any };
+  };
+  baseRef?: { __typename?: "Ref"; name: string } | null;
+  headRef?: { __typename?: "Ref"; name: string } | null;
+  milestone?: { __typename?: "Milestone"; id: string; title: string } | null;
+  labels?: {
+    __typename?: "LabelConnection";
+    totalCount: number;
+    nodes?: Array<{ __typename?: "Label"; id: string; name: string; color: string } | null> | null;
+  } | null;
+  assignees: {
+    __typename?: "UserConnection";
+    totalCount: number;
+    nodes?: Array<{
+      __typename?: "User";
+      id: string;
+      avatarUrl: any;
+      name?: string | null;
+      login: string;
+      isViewer: boolean;
+    } | null> | null;
+  };
+  reviewRequests?: {
+    __typename?: "ReviewRequestConnection";
+    totalCount: number;
+    nodes?: Array<{
+      __typename?: "ReviewRequest";
+      requestedReviewer?:
+        | { __typename?: "Bot" }
+        | { __typename?: "Mannequin"; id: string; githubUsername: string; userAvatarURL: any }
+        | { __typename?: "Team"; id: string; teamName: string; teamAvatarURL?: any | null }
+        | { __typename?: "User"; id: string; githubUsername: string; userName?: string | null; userAvatarURL: any }
+        | null;
+    } | null> | null;
+  } | null;
+  projectsV2: {
+    __typename?: "ProjectV2Connection";
+    totalCount: number;
+    nodes?: Array<{ __typename?: "ProjectV2"; id: string; title: string } | null> | null;
+  };
+  comments: {
+    __typename?: "IssueCommentConnection";
+    totalCount: number;
+    nodes?: Array<{
+      __typename?: "IssueComment";
+      id: string;
+      body: string;
+      createdAt: any;
+      author?:
+        | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+        | { __typename?: "EnterpriseUserAccount"; id: string; login: string; name?: string | null; avatarUrl: any }
+        | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+        | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+        | { __typename?: "User"; id: string; avatarUrl: any; name?: string | null; login: string; isViewer: boolean }
+        | null;
+      reactionGroups?: Array<{
+        __typename?: "ReactionGroup";
+        content: ReactionContent;
+        users: { __typename?: "ReactingUserConnection"; totalCount: number };
+      }> | null;
+    } | null> | null;
+  };
+  reviews?: {
+    __typename?: "PullRequestReviewConnection";
+    totalCount: number;
+    nodes?: Array<{
+      __typename?: "PullRequestReview";
+      id: string;
+      body: string;
+      state: PullRequestReviewState;
+      createdAt: any;
+      author?:
+        | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+        | { __typename?: "EnterpriseUserAccount"; id: string; login: string; name?: string | null; avatarUrl: any }
+        | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+        | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+        | { __typename?: "User"; id: string; avatarUrl: any; name?: string | null; login: string; isViewer: boolean }
+        | null;
+      comments: {
+        __typename?: "PullRequestReviewCommentConnection";
+        totalCount: number;
+        nodes?: Array<{
+          __typename?: "PullRequestReviewComment";
+          id: string;
+          body: string;
+          createdAt: any;
+          reactionGroups?: Array<{
+            __typename?: "ReactionGroup";
+            content: ReactionContent;
+            users: { __typename?: "ReactingUserConnection"; totalCount: number };
+          }> | null;
+        } | null> | null;
+      };
+    } | null> | null;
+  } | null;
+  reviewThreads: {
+    __typename?: "PullRequestReviewThreadConnection";
+    totalCount: number;
+    nodes?: Array<{
+      __typename?: "PullRequestReviewThread";
+      id: string;
+      isResolved: boolean;
+      comments: {
+        __typename?: "PullRequestReviewCommentConnection";
+        totalCount: number;
+        nodes?: Array<{
+          __typename?: "PullRequestReviewComment";
+          id: string;
+          body: string;
+          createdAt: any;
+          author?:
+            | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+            | { __typename?: "EnterpriseUserAccount"; id: string; login: string; name?: string | null; avatarUrl: any }
+            | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+            | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+            | {
+                __typename?: "User";
+                id: string;
+                avatarUrl: any;
+                name?: string | null;
+                login: string;
+                isViewer: boolean;
+              }
+            | null;
+          reactionGroups?: Array<{
+            __typename?: "ReactionGroup";
+            content: ReactionContent;
+            users: { __typename?: "ReactingUserConnection"; totalCount: number };
+          }> | null;
+        } | null> | null;
+      };
+    } | null> | null;
+  };
+  commits: {
+    __typename?: "PullRequestCommitConnection";
+    totalCount: number;
+    nodes?: Array<{
+      __typename?: "PullRequestCommit";
+      commit: {
+        __typename?: "Commit";
+        oid: any;
+        message: string;
+        author?: { __typename?: "GitActor"; name?: string | null; email?: string | null; date?: any | null } | null;
+        statusCheckRollup?: { __typename?: "StatusCheckRollup"; state: StatusState } | null;
+        comments: {
+          __typename?: "CommitCommentConnection";
+          totalCount: number;
+          nodes?: Array<{
+            __typename?: "CommitComment";
+            id: string;
+            body: string;
+            createdAt: any;
+            author?:
+              | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+              | {
+                  __typename?: "EnterpriseUserAccount";
+                  id: string;
+                  login: string;
+                  name?: string | null;
+                  avatarUrl: any;
+                }
+              | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+              | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+              | {
+                  __typename?: "User";
+                  id: string;
+                  avatarUrl: any;
+                  name?: string | null;
+                  login: string;
+                  isViewer: boolean;
+                }
+              | null;
+            reactionGroups?: Array<{
+              __typename?: "ReactionGroup";
+              content: ReactionContent;
+              users: { __typename?: "ReactingUserConnection"; totalCount: number };
+            }> | null;
+          } | null> | null;
+        };
+      };
+    } | null> | null;
+  };
+};
+
+export type PullRequestExtendedDetailsQueryVariables = Exact<{
+  nodeId: Scalars["ID"]["input"];
+}>;
+
+export type PullRequestExtendedDetailsQuery = {
+  __typename?: "Query";
+  node?:
+    | { __typename?: "AddedToMergeQueueEvent" }
+    | { __typename?: "AddedToProjectEvent" }
+    | { __typename?: "App" }
+    | { __typename?: "AssignedEvent" }
+    | { __typename?: "AutoMergeDisabledEvent" }
+    | { __typename?: "AutoMergeEnabledEvent" }
+    | { __typename?: "AutoRebaseEnabledEvent" }
+    | { __typename?: "AutoSquashEnabledEvent" }
+    | { __typename?: "AutomaticBaseChangeFailedEvent" }
+    | { __typename?: "AutomaticBaseChangeSucceededEvent" }
+    | { __typename?: "BaseRefChangedEvent" }
+    | { __typename?: "BaseRefDeletedEvent" }
+    | { __typename?: "BaseRefForcePushedEvent" }
+    | { __typename?: "Blob" }
+    | { __typename?: "Bot" }
+    | { __typename?: "BranchProtectionRule" }
+    | { __typename?: "BypassForcePushAllowance" }
+    | { __typename?: "BypassPullRequestAllowance" }
+    | { __typename?: "CWE" }
+    | { __typename?: "CheckRun" }
+    | { __typename?: "CheckSuite" }
+    | { __typename?: "ClosedEvent" }
+    | { __typename?: "CodeOfConduct" }
+    | { __typename?: "CommentDeletedEvent" }
+    | { __typename?: "Commit" }
+    | { __typename?: "CommitComment" }
+    | { __typename?: "CommitCommentThread" }
+    | { __typename?: "Comparison" }
+    | { __typename?: "ConnectedEvent" }
+    | { __typename?: "ConvertToDraftEvent" }
+    | { __typename?: "ConvertedNoteToIssueEvent" }
+    | { __typename?: "ConvertedToDiscussionEvent" }
+    | { __typename?: "CrossReferencedEvent" }
+    | { __typename?: "DemilestonedEvent" }
+    | { __typename?: "DependencyGraphManifest" }
+    | { __typename?: "DeployKey" }
+    | { __typename?: "DeployedEvent" }
+    | { __typename?: "Deployment" }
+    | { __typename?: "DeploymentEnvironmentChangedEvent" }
+    | { __typename?: "DeploymentReview" }
+    | { __typename?: "DeploymentStatus" }
+    | { __typename?: "DisconnectedEvent" }
+    | { __typename?: "Discussion" }
+    | { __typename?: "DiscussionCategory" }
+    | { __typename?: "DiscussionComment" }
+    | { __typename?: "DiscussionPoll" }
+    | { __typename?: "DiscussionPollOption" }
+    | { __typename?: "DraftIssue" }
+    | { __typename?: "Enterprise" }
+    | { __typename?: "EnterpriseAdministratorInvitation" }
+    | { __typename?: "EnterpriseIdentityProvider" }
+    | { __typename?: "EnterpriseMemberInvitation" }
+    | { __typename?: "EnterpriseRepositoryInfo" }
+    | { __typename?: "EnterpriseServerInstallation" }
+    | { __typename?: "EnterpriseServerUserAccount" }
+    | { __typename?: "EnterpriseServerUserAccountEmail" }
+    | { __typename?: "EnterpriseServerUserAccountsUpload" }
+    | { __typename?: "EnterpriseUserAccount" }
+    | { __typename?: "Environment" }
+    | { __typename?: "ExternalIdentity" }
+    | { __typename?: "Gist" }
+    | { __typename?: "GistComment" }
+    | { __typename?: "HeadRefDeletedEvent" }
+    | { __typename?: "HeadRefForcePushedEvent" }
+    | { __typename?: "HeadRefRestoredEvent" }
+    | { __typename?: "IpAllowListEntry" }
+    | { __typename?: "Issue" }
+    | { __typename?: "IssueComment" }
+    | { __typename?: "Label" }
+    | { __typename?: "LabeledEvent" }
+    | { __typename?: "Language" }
+    | { __typename?: "License" }
+    | { __typename?: "LinkedBranch" }
+    | { __typename?: "LockedEvent" }
+    | { __typename?: "Mannequin" }
+    | { __typename?: "MarkedAsDuplicateEvent" }
+    | { __typename?: "MarketplaceCategory" }
+    | { __typename?: "MarketplaceListing" }
+    | { __typename?: "MemberFeatureRequestNotification" }
+    | { __typename?: "MembersCanDeleteReposClearAuditEntry" }
+    | { __typename?: "MembersCanDeleteReposDisableAuditEntry" }
+    | { __typename?: "MembersCanDeleteReposEnableAuditEntry" }
+    | { __typename?: "MentionedEvent" }
+    | { __typename?: "MergeQueue" }
+    | { __typename?: "MergeQueueEntry" }
+    | { __typename?: "MergedEvent" }
+    | { __typename?: "MigrationSource" }
+    | { __typename?: "Milestone" }
+    | { __typename?: "MilestonedEvent" }
+    | { __typename?: "MovedColumnsInProjectEvent" }
+    | { __typename?: "OIDCProvider" }
+    | { __typename?: "OauthApplicationCreateAuditEntry" }
+    | { __typename?: "OrgAddBillingManagerAuditEntry" }
+    | { __typename?: "OrgAddMemberAuditEntry" }
+    | { __typename?: "OrgBlockUserAuditEntry" }
+    | { __typename?: "OrgConfigDisableCollaboratorsOnlyAuditEntry" }
+    | { __typename?: "OrgConfigEnableCollaboratorsOnlyAuditEntry" }
+    | { __typename?: "OrgCreateAuditEntry" }
+    | { __typename?: "OrgDisableOauthAppRestrictionsAuditEntry" }
+    | { __typename?: "OrgDisableSamlAuditEntry" }
+    | { __typename?: "OrgDisableTwoFactorRequirementAuditEntry" }
+    | { __typename?: "OrgEnableOauthAppRestrictionsAuditEntry" }
+    | { __typename?: "OrgEnableSamlAuditEntry" }
+    | { __typename?: "OrgEnableTwoFactorRequirementAuditEntry" }
+    | { __typename?: "OrgInviteMemberAuditEntry" }
+    | { __typename?: "OrgInviteToBusinessAuditEntry" }
+    | { __typename?: "OrgOauthAppAccessApprovedAuditEntry" }
+    | { __typename?: "OrgOauthAppAccessBlockedAuditEntry" }
+    | { __typename?: "OrgOauthAppAccessDeniedAuditEntry" }
+    | { __typename?: "OrgOauthAppAccessRequestedAuditEntry" }
+    | { __typename?: "OrgOauthAppAccessUnblockedAuditEntry" }
+    | { __typename?: "OrgRemoveBillingManagerAuditEntry" }
+    | { __typename?: "OrgRemoveMemberAuditEntry" }
+    | { __typename?: "OrgRemoveOutsideCollaboratorAuditEntry" }
+    | { __typename?: "OrgRestoreMemberAuditEntry" }
+    | { __typename?: "OrgUnblockUserAuditEntry" }
+    | { __typename?: "OrgUpdateDefaultRepositoryPermissionAuditEntry" }
+    | { __typename?: "OrgUpdateMemberAuditEntry" }
+    | { __typename?: "OrgUpdateMemberRepositoryCreationPermissionAuditEntry" }
+    | { __typename?: "OrgUpdateMemberRepositoryInvitationPermissionAuditEntry" }
+    | { __typename?: "Organization" }
+    | { __typename?: "OrganizationIdentityProvider" }
+    | { __typename?: "OrganizationInvitation" }
+    | { __typename?: "OrganizationMigration" }
+    | { __typename?: "Package" }
+    | { __typename?: "PackageFile" }
+    | { __typename?: "PackageTag" }
+    | { __typename?: "PackageVersion" }
+    | { __typename?: "PinnedDiscussion" }
+    | { __typename?: "PinnedEnvironment" }
+    | { __typename?: "PinnedEvent" }
+    | { __typename?: "PinnedIssue" }
+    | { __typename?: "PrivateRepositoryForkingDisableAuditEntry" }
+    | { __typename?: "PrivateRepositoryForkingEnableAuditEntry" }
+    | { __typename?: "Project" }
+    | { __typename?: "ProjectCard" }
+    | { __typename?: "ProjectColumn" }
+    | { __typename?: "ProjectV2" }
+    | { __typename?: "ProjectV2Field" }
+    | { __typename?: "ProjectV2Item" }
+    | { __typename?: "ProjectV2ItemFieldDateValue" }
+    | { __typename?: "ProjectV2ItemFieldIterationValue" }
+    | { __typename?: "ProjectV2ItemFieldNumberValue" }
+    | { __typename?: "ProjectV2ItemFieldSingleSelectValue" }
+    | { __typename?: "ProjectV2ItemFieldTextValue" }
+    | { __typename?: "ProjectV2IterationField" }
+    | { __typename?: "ProjectV2SingleSelectField" }
+    | { __typename?: "ProjectV2StatusUpdate" }
+    | { __typename?: "ProjectV2View" }
+    | { __typename?: "ProjectV2Workflow" }
+    | { __typename?: "PublicKey" }
+    | {
+        __typename?: "PullRequest";
+        id: string;
+        title: string;
+        body: string;
+        permalink: any;
+        number: number;
+        state: PullRequestState;
+        isDraft: boolean;
+        closed: boolean;
+        merged: boolean;
+        createdAt: any;
+        updatedAt: any;
+        closedAt?: any | null;
+        mergedAt?: any | null;
+        additions: number;
+        deletions: number;
+        mergeable: MergeableState;
+        reviewDecision?: PullRequestReviewDecision | null;
+        baseRefName: string;
+        headRefName: string;
+        author?:
+          | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+          | { __typename?: "EnterpriseUserAccount"; id: string; login: string; name?: string | null; avatarUrl: any }
+          | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+          | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+          | { __typename?: "User"; id: string; avatarUrl: any; name?: string | null; login: string; isViewer: boolean }
+          | null;
+        repository: {
+          __typename?: "Repository";
+          id: string;
+          nameWithOwner: string;
+          name: string;
+          url: any;
+          mergeCommitAllowed: boolean;
+          squashMergeAllowed: boolean;
+          rebaseMergeAllowed: boolean;
+          defaultBranchRef?: {
+            __typename?: "Ref";
+            target?:
+              | { __typename?: "Blob"; oid: any }
+              | { __typename?: "Commit"; oid: any }
+              | { __typename?: "Tag"; oid: any }
+              | { __typename?: "Tree"; oid: any }
+              | null;
+          } | null;
+          owner:
+            | { __typename?: "Organization"; login: string; avatarUrl: any }
+            | { __typename?: "User"; login: string; avatarUrl: any };
+        };
+        baseRef?: { __typename?: "Ref"; name: string } | null;
+        headRef?: { __typename?: "Ref"; name: string } | null;
+        milestone?: { __typename?: "Milestone"; id: string; title: string } | null;
+        labels?: {
+          __typename?: "LabelConnection";
+          totalCount: number;
+          nodes?: Array<{ __typename?: "Label"; id: string; name: string; color: string } | null> | null;
+        } | null;
+        assignees: {
+          __typename?: "UserConnection";
+          totalCount: number;
+          nodes?: Array<{
+            __typename?: "User";
+            id: string;
+            avatarUrl: any;
+            name?: string | null;
+            login: string;
+            isViewer: boolean;
+          } | null> | null;
+        };
+        reviewRequests?: {
+          __typename?: "ReviewRequestConnection";
+          totalCount: number;
+          nodes?: Array<{
+            __typename?: "ReviewRequest";
+            requestedReviewer?:
+              | { __typename?: "Bot" }
+              | { __typename?: "Mannequin"; id: string; githubUsername: string; userAvatarURL: any }
+              | { __typename?: "Team"; id: string; teamName: string; teamAvatarURL?: any | null }
+              | {
+                  __typename?: "User";
+                  id: string;
+                  githubUsername: string;
+                  userName?: string | null;
+                  userAvatarURL: any;
+                }
+              | null;
+          } | null> | null;
+        } | null;
+        projectsV2: {
+          __typename?: "ProjectV2Connection";
+          totalCount: number;
+          nodes?: Array<{ __typename?: "ProjectV2"; id: string; title: string } | null> | null;
+        };
+        comments: {
+          __typename?: "IssueCommentConnection";
+          totalCount: number;
+          nodes?: Array<{
+            __typename?: "IssueComment";
+            id: string;
+            body: string;
+            createdAt: any;
+            author?:
+              | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+              | {
+                  __typename?: "EnterpriseUserAccount";
+                  id: string;
+                  login: string;
+                  name?: string | null;
+                  avatarUrl: any;
+                }
+              | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+              | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+              | {
+                  __typename?: "User";
+                  id: string;
+                  avatarUrl: any;
+                  name?: string | null;
+                  login: string;
+                  isViewer: boolean;
+                }
+              | null;
+            reactionGroups?: Array<{
+              __typename?: "ReactionGroup";
+              content: ReactionContent;
+              users: { __typename?: "ReactingUserConnection"; totalCount: number };
+            }> | null;
+          } | null> | null;
+        };
+        reviews?: {
+          __typename?: "PullRequestReviewConnection";
+          totalCount: number;
+          nodes?: Array<{
+            __typename?: "PullRequestReview";
+            id: string;
+            body: string;
+            state: PullRequestReviewState;
+            createdAt: any;
+            author?:
+              | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+              | {
+                  __typename?: "EnterpriseUserAccount";
+                  id: string;
+                  login: string;
+                  name?: string | null;
+                  avatarUrl: any;
+                }
+              | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+              | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+              | {
+                  __typename?: "User";
+                  id: string;
+                  avatarUrl: any;
+                  name?: string | null;
+                  login: string;
+                  isViewer: boolean;
+                }
+              | null;
+            comments: {
+              __typename?: "PullRequestReviewCommentConnection";
+              totalCount: number;
+              nodes?: Array<{
+                __typename?: "PullRequestReviewComment";
+                id: string;
+                body: string;
+                createdAt: any;
+                reactionGroups?: Array<{
+                  __typename?: "ReactionGroup";
+                  content: ReactionContent;
+                  users: { __typename?: "ReactingUserConnection"; totalCount: number };
+                }> | null;
+              } | null> | null;
+            };
+          } | null> | null;
+        } | null;
+        reviewThreads: {
+          __typename?: "PullRequestReviewThreadConnection";
+          totalCount: number;
+          nodes?: Array<{
+            __typename?: "PullRequestReviewThread";
+            id: string;
+            isResolved: boolean;
+            comments: {
+              __typename?: "PullRequestReviewCommentConnection";
+              totalCount: number;
+              nodes?: Array<{
+                __typename?: "PullRequestReviewComment";
+                id: string;
+                body: string;
+                createdAt: any;
+                author?:
+                  | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+                  | {
+                      __typename?: "EnterpriseUserAccount";
+                      id: string;
+                      login: string;
+                      name?: string | null;
+                      avatarUrl: any;
+                    }
+                  | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+                  | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+                  | {
+                      __typename?: "User";
+                      id: string;
+                      avatarUrl: any;
+                      name?: string | null;
+                      login: string;
+                      isViewer: boolean;
+                    }
+                  | null;
+                reactionGroups?: Array<{
+                  __typename?: "ReactionGroup";
+                  content: ReactionContent;
+                  users: { __typename?: "ReactingUserConnection"; totalCount: number };
+                }> | null;
+              } | null> | null;
+            };
+          } | null> | null;
+        };
+        commits: {
+          __typename?: "PullRequestCommitConnection";
+          totalCount: number;
+          nodes?: Array<{
+            __typename?: "PullRequestCommit";
+            commit: {
+              __typename?: "Commit";
+              oid: any;
+              message: string;
+              author?: {
+                __typename?: "GitActor";
+                name?: string | null;
+                email?: string | null;
+                date?: any | null;
+              } | null;
+              statusCheckRollup?: { __typename?: "StatusCheckRollup"; state: StatusState } | null;
+              comments: {
+                __typename?: "CommitCommentConnection";
+                totalCount: number;
+                nodes?: Array<{
+                  __typename?: "CommitComment";
+                  id: string;
+                  body: string;
+                  createdAt: any;
+                  author?:
+                    | { __typename?: "Bot"; id: string; login: string; avatarUrl: any }
+                    | {
+                        __typename?: "EnterpriseUserAccount";
+                        id: string;
+                        login: string;
+                        name?: string | null;
+                        avatarUrl: any;
+                      }
+                    | { __typename?: "Mannequin"; id: string; login: string; avatarUrl: any }
+                    | { __typename?: "Organization"; id: string; login: string; name?: string | null; avatarUrl: any }
+                    | {
+                        __typename?: "User";
+                        id: string;
+                        avatarUrl: any;
+                        name?: string | null;
+                        login: string;
+                        isViewer: boolean;
+                      }
+                    | null;
+                  reactionGroups?: Array<{
+                    __typename?: "ReactionGroup";
+                    content: ReactionContent;
+                    users: { __typename?: "ReactingUserConnection"; totalCount: number };
+                  }> | null;
+                } | null> | null;
+              };
+            };
+          } | null> | null;
         };
       }
     | { __typename?: "PullRequestCommit" }
@@ -34281,6 +35064,195 @@ export const PullRequestDetailsFieldsFragmentDoc = gql`
   ${AuthorFieldsFragmentDoc}
   ${UserFieldsFragmentDoc}
 `;
+export const PullRequestExtendedDetailsFragmentDoc = gql`
+  fragment PullRequestExtendedDetails on PullRequest {
+    id
+    title
+    body
+    permalink
+    number
+    state
+    isDraft
+    closed
+    merged
+    createdAt
+    updatedAt
+    closedAt
+    mergedAt
+    additions
+    deletions
+    mergeable
+    reviewDecision
+    author {
+      ...AuthorFields
+    }
+    repository {
+      ...ShortRepositoryFields
+    }
+    baseRefName
+    baseRef {
+      name
+    }
+    headRefName
+    headRef {
+      name
+    }
+    milestone {
+      id
+      title
+    }
+    labels(first: 50, orderBy: { field: NAME, direction: ASC }) {
+      totalCount
+      nodes {
+        id
+        name
+        color
+      }
+    }
+    assignees(first: 50) {
+      totalCount
+      nodes {
+        ... on User {
+          ...UserFields
+        }
+      }
+    }
+    reviewRequests(first: 50) {
+      totalCount
+      nodes {
+        requestedReviewer {
+          ... on Team {
+            id
+            teamName: name
+            teamAvatarURL: avatarUrl(size: 64)
+          }
+          ... on User {
+            id
+            githubUsername: login
+            userName: name
+            userAvatarURL: avatarUrl(size: 64)
+          }
+          ... on Mannequin {
+            id
+            githubUsername: login
+            userAvatarURL: avatarUrl(size: 64)
+          }
+        }
+      }
+    }
+    projectsV2(first: 20) {
+      totalCount
+      nodes {
+        id
+        title
+      }
+    }
+    comments(first: 100) {
+      totalCount
+      nodes {
+        id
+        author {
+          ...AuthorFields
+        }
+        body
+        createdAt
+        reactionGroups {
+          content
+          users {
+            totalCount
+          }
+        }
+      }
+    }
+    reviews(first: 100) {
+      totalCount
+      nodes {
+        id
+        author {
+          ...AuthorFields
+        }
+        body
+        state
+        createdAt
+        comments(first: 100) {
+          totalCount
+          nodes {
+            id
+            body
+            createdAt
+            reactionGroups {
+              content
+              users {
+                totalCount
+              }
+            }
+          }
+        }
+      }
+    }
+    reviewThreads(first: 100) {
+      totalCount
+      nodes {
+        id
+        isResolved
+        comments(first: 100) {
+          totalCount
+          nodes {
+            id
+            author {
+              ...AuthorFields
+            }
+            body
+            createdAt
+            reactionGroups {
+              content
+              users {
+                totalCount
+              }
+            }
+          }
+        }
+      }
+    }
+    commits(last: 100) {
+      totalCount
+      nodes {
+        commit {
+          oid
+          message
+          author {
+            name
+            email
+            date
+          }
+          statusCheckRollup {
+            state
+          }
+          comments(first: 100) {
+            totalCount
+            nodes {
+              id
+              author {
+                ...AuthorFields
+              }
+              body
+              createdAt
+              reactionGroups {
+                content
+                users {
+                  totalCount
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ${AuthorFieldsFragmentDoc}
+  ${ShortRepositoryFieldsFragmentDoc}
+  ${UserFieldsFragmentDoc}
+`;
 export const PullRequestCommitFieldsFragmentDoc = gql`
   fragment PullRequestCommitFields on PullRequest {
     commits(last: 100) {
@@ -34571,6 +35543,21 @@ export const SearchPullRequestsDocument = gql`
   }
   ${PullRequestFieldsFragmentDoc}
 `;
+export const FastSearchPullRequestsDocument = gql`
+  query fastSearchPullRequests($query: String!, $numberOfItems: Int!) {
+    search(query: $query, type: ISSUE, first: $numberOfItems) {
+      edges {
+        node {
+          ... on PullRequest {
+            id
+            title
+            number
+          }
+        }
+      }
+    }
+  }
+`;
 export const PullRequestDetailsDocument = gql`
   query pullRequestDetails($nodeId: ID!) {
     node(id: $nodeId) {
@@ -34578,6 +35565,14 @@ export const PullRequestDetailsDocument = gql`
     }
   }
   ${PullRequestDetailsFieldsFragmentDoc}
+`;
+export const PullRequestExtendedDetailsDocument = gql`
+  query pullRequestExtendedDetails($nodeId: ID!) {
+    node(id: $nodeId) {
+      ...PullRequestExtendedDetails
+    }
+  }
+  ${PullRequestExtendedDetailsFragmentDoc}
 `;
 export const RepositoryCollaboratorsForPullRequestsDocument = gql`
   query repositoryCollaboratorsForPullRequests($owner: String!, $name: String!, $pullRequestNumber: Int!) {
@@ -35239,6 +36234,21 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
         variables,
       );
     },
+    fastSearchPullRequests(
+      variables: FastSearchPullRequestsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<FastSearchPullRequestsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<FastSearchPullRequestsQuery>(FastSearchPullRequestsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        "fastSearchPullRequests",
+        "query",
+        variables,
+      );
+    },
     pullRequestDetails(
       variables: PullRequestDetailsQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
@@ -35250,6 +36260,21 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         "pullRequestDetails",
+        "query",
+        variables,
+      );
+    },
+    pullRequestExtendedDetails(
+      variables: PullRequestExtendedDetailsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<PullRequestExtendedDetailsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<PullRequestExtendedDetailsQuery>(PullRequestExtendedDetailsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        "pullRequestExtendedDetails",
         "query",
         variables,
       );

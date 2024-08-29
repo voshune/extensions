@@ -108,6 +108,14 @@
       "description": "Choose where to open Notion page."
     }
   ],
+  "attachments": [
+    {
+      "title": "Search Notion Page",
+      "name": "search-notion-page-attachment",
+      "description": "Search a page in Notion.",
+      "mode": "typeahead submenu"
+    }
+  ],
   "dependencies": {
     "@mozilla/readability": "^0.5.0",
     "@notionhq/client": "^2.2.14",
